@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Box, TextField, Button, Typography, styled } from '@mui/material'
 // import { API } from '../../service/api'
 import axios from '../../service/api'
-
+import { DataContext } from '../../context/DataProvider'
 const Component = styled(Box)`
     width: 400px;
     margin: auto;
@@ -58,6 +58,7 @@ const Login = () => {
     const [signup, setSignup] = useState(signupInitialValues)
     const [error, setError] = useState('')
     const [login, setLogin] = useState(loginInitialValues)
+    const {setAccountDetail} = useContext(DataContext)
     const toggleSignUp = () => {
         account === 'login' ? setAccount('signUp') : setAccount('login')
     }
@@ -90,6 +91,7 @@ const Login = () => {
             setError('')
             sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`)
             sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`)
+            setAccountDetail({username: response.data.username, name: response.data.name})
         } else {
             setError('Something went wrong. Please try again later!')
         }
