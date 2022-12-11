@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Box, TextField, Button, Typography, styled } from '@mui/material'
-import { API } from '../../service/api'
+// import { API } from '../../service/api'
+import axios from '../../service/api'
 
 const Component = styled(Box)`
     width: 400px;
@@ -61,14 +62,16 @@ const Login = () => {
 
     const signupUser = async () => {
         console.log('signup -> ', signup)
-        console.log('API -> ', API)
-        let response = await API.userSignup(signup)
-        if (response.isSuccess) {
+        // console.log('API -> ', API)
+        // let response = await API.userSignup(signup)
+        let response = axios.post('/signup', signup);
+        console.log('response --> ', response);
+        if (response) {
             setSignup(signupInitialValues)
             setAccount('login')
             setError('')
         } else {
-            setError('Something went wrong!')
+            setError('Something went wrong!')  
         }
     }
     return (
