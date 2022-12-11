@@ -47,12 +47,17 @@ const signupInitialValues = {
     username: '',
     password: ''
 }
+const loginInitialValues = {
+    username: '',
+    password: ''
+}
 const Login = () => {
     const imageURL = 'https://www.sesta.it/wp-content/uploads/2021/03/logo-blog-sesta-trasparente.png';
 
     const [account, setAccount] = useState('login');
     const [signup, setSignup] = useState(signupInitialValues)
     const [error, setError] = useState('')
+    const [login, setLogin] = useState(loginInitialValues)
     const toggleSignUp = () => {
         account === 'login' ? setAccount('signUp') : setAccount('login')
     }
@@ -64,14 +69,29 @@ const Login = () => {
         console.log('signup -> ', signup)
         // console.log('API -> ', API)
         // let response = await API.userSignup(signup)
-        let response = axios.post('/signup', signup);
+        let response = await axios.post('/signup', signup);
         console.log('response --> ', response);
         if (response) {
             setSignup(signupInitialValues)
             setAccount('login')
             setError('')
         } else {
-            setError('Something went wrong!')  
+            setError('Something went wrong. Please try again later!')
+        }
+    }
+
+    const onValueChange = (e) => {
+        setLogin({ ...login, [e.target.name]: e.target.value })
+    }
+
+    const loginUser = async () => {
+        let response = await axios.post('/login', login);
+        if (response) {
+            setError('')
+            sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`)
+            sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`)
+        } else {
+            setError('Something went wrong. Please try again later!')
         }
     }
     return (
@@ -81,9 +101,9 @@ const Login = () => {
                 {
                     account === 'login' ?
                         <Wrapper>
-                            <TextField variant="standard" label="Enter username" />
-                            <TextField variant="standard" label="Enter password" />
-                            <Button variant="contained">Login</Button>
+                            <TextField variant="standard" onChange={(e) => onValueChange(e)} name='username' label="Enter username" />
+                            <TextField variant="standard" onChange={(e) => onValueChange(e)} name='password' label="Enter password" />
+                            <Button variant="contained" onClick={() => loginUser()}>Login</Button>
                             <Text>OR</Text>
                             <SignUpButton onClick={toggleSignUp}>Create an account</SignUpButton>
                         </Wrapper>
