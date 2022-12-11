@@ -1,7 +1,13 @@
 const express = require('express');
+const cors = require('cors')
+const bodyParser = require('body-parser')
 const Connection = require('./database/db.js')
 const signupRoute = require('./routes/route')
+require('dotenv').config()
 const app = express()
+app.use(cors())
+app.use(bodyParser.json({extended: true}))
+app.use(bodyParser.urlencoded({extended: true}))
 
 app.use('/', signupRoute)
 const PORT = 8000;
